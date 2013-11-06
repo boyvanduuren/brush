@@ -34,7 +34,7 @@ class Brush
             response = Brush::HTTP.get('/_search', { :body => payload })
             hash = MultiJson.load(response.body)
 
-            puts "Query returns #{hash["hits"]["total"]} hits"
+            return hash
         end
 
         def delete_timestamp(uri, epoch_start, epoch_end)

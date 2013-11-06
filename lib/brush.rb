@@ -2,8 +2,10 @@ require 'thor'
 
 class Brush < Thor
     autoload :Actions, 'brush/actions'
+    autoload :Timecalc, 'brush/time'
 
     include Brush::Actions
+    include Brush::Timecalc
 
     desc "version", "show the version of brush"
     def version
@@ -17,8 +19,12 @@ class Brush < Thor
         sample usage:
         \x5brush hours 16 eshost:9200
     LONGDESC
-    def hours(keep_hours, es_cluster)
+    def hours(keep_hours, uri)
+        epoch_end = calculate_epochms(keep_hours, 'hours')
         puts "Cleaning the backend, leaving #{keep_hours} hours."
+        puts "Deleting #{search_timestamp(uri, 0, epoch_end)['hits']['total']} entries"
+
+        delete_timestamp(uri, 0, epoch_end)
     end
 
     desc "days N <host>:<port>", "clean the elasticsearch backend, leaving N days"
@@ -28,8 +34,12 @@ class Brush < Thor
         sample usage:
         \x5brush days 7 eshost:9200
     LONGDESC
-    def days(keep_days, es_cluster)
+    def days(keep_days, uri)
+        epoch_end = calculate_epochms(keep_days, 'days')
         puts "Cleaning the backend, leaving #{keep_days} days."
+        puts "Deleting #{search_timestamp(uri, 0, epoch_end)['hits']['total']} entries"
+
+        delete_timestamp(uri, 0, epoch_end)
     end
 
     desc "space N <host>:<port>", "clean the elasticsearch backend, leaving N of space"
@@ -51,12 +61,19 @@ class Brush < Thor
 
 # TESTING #
     desc "search uri start_epoch_millisecs end_epoch_millisecs", "testing: search es"
-    def search(uri, epoch_begin, epoch_end)
-        search_timestamp(uri, epoch_begin, epoch_end)
+    def search(uri, amount, unit)
+        epoch_end = calculate_epochms(amount, unit)
+        search_timestamp(uri, 0, epoch_end)
     end
 
     desc "delete uri start_epoch_millisecs end_epoch_millisecs", "testing: delete index"
-    def delete(uri, epoch_begin, epoch_end)
-        delete_timestamp(uri, epoch_begin, epoch_end)
+    def delete(uri, amount, unit)
+        epoch_end = calculate_epochms(amount, unit)
+        delete_timestamp(uri, 0, epoch_end)
+    end
+
+    desc "calc epoch", "testing: calc epoch"
+    def calculate(amount, unit)
+        puts calculate_epochms(amount, unit)
     end
 end
