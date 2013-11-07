@@ -58,22 +58,4 @@ class Brush < Thor
     def space(keep_space, es_cluster)
         puts "Cleaning the backend on #{es_cluster}, leaving #{keep_space} of space."
     end
-
-# TESTING #
-    desc "search uri start_epoch_millisecs end_epoch_millisecs", "testing: search es"
-    def search(uri, amount, unit)
-        epoch_end = calculate_epochms(amount, unit)
-        puts "Search resulted in #{search_timestamp(uri, 0, epoch_end)['hits']['total']} hits"
-    end
-
-    desc "delete uri start_epoch_millisecs end_epoch_millisecs", "testing: delete index"
-    def delete(uri, amount, unit)
-        epoch_end = calculate_epochms(amount, unit)
-        delete_timestamp(uri, 0, epoch_end)
-    end
-
-    desc "calc epoch", "testing: calc epoch"
-    def calculate(amount, unit)
-        puts calculate_epochms(amount, unit)
-    end
 end
