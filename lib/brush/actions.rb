@@ -12,7 +12,7 @@ class Brush
             puts "Cleaning elasticsearch, leaving #{keep_days} days of history"
             puts "Deleting #{query_results['hits']['total']} entries"
 
-            delete_timestamp(uri, 0, epoch_end)
+            if ask_confirmation then delete_timestamp(uri, 0, epoch_end) end
         end
 
         def purge_hours(keep_hours, uri)
@@ -27,7 +27,16 @@ class Brush
             puts "Cleaning elasticsearch, leaving #{keep_hours} hours of history"
             puts "Deleting #{query_results['hits']['total']} entries"
 
-            delete_timestamp(uri, 0, epoch_end)
+            if ask_confirmation then delete_timestamp(uri, 0, epoch_end) end
+        end
+
+        def ask_confirmation
+            print "Press 'Y' to confirm: "
+            if STDIN.gets.chomp == 'Y' then
+                return true
+            else
+                return false
+            end
         end
     end
 end
