@@ -3,9 +3,11 @@ require 'thor'
 class Brush < Thor
     autoload :Actions, 'brush/actions'
     autoload :Timecalc, 'brush/time'
+    autoload :Elasticsearch, 'brush/elasticsearch'
 
     include Brush::Actions
     include Brush::Timecalc
+    include Brush::Elasticsearch
 
     desc "version", "show the version of brush"
     def version
@@ -20,11 +22,7 @@ class Brush < Thor
         \x5brush hours 16 eshost:9200
     LONGDESC
     def hours(keep_hours, uri)
-        epoch_end = calculate_epochms(keep_hours, 'hours')
-        puts "Cleaning the backend, leaving #{keep_hours} hours."
-        puts "Deleting #{search_timestamp(uri, 0, epoch_end)['hits']['total']} entries"
-
-        delete_timestamp(uri, 0, epoch_end)
+        purge_hours(keep_hours, uri)
     end
 
     desc "days N <host>:<port>", "clean the elasticsearch backend, leaving N days"
@@ -35,11 +33,7 @@ class Brush < Thor
         \x5brush days 7 eshost:9200
     LONGDESC
     def days(keep_days, uri)
-        epoch_end = calculate_epochms(keep_days, 'days')
-        puts "Cleaning the backend, leaving #{keep_days} days."
-        puts "Deleting #{search_timestamp(uri, 0, epoch_end)['hits']['total']} entries"
-
-        delete_timestamp(uri, 0, epoch_end)
+        purge_days(keep_days, uri)
     end
 
     desc "space N <host>:<port>", "clean the elasticsearch backend, leaving N of space"

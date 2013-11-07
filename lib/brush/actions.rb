@@ -1,68 +1,23 @@
-require 'httparty'
-require 'multi_json'
-
 class Brush
-    module HTTP
-        include HTTParty
-    end
     module Actions
+        def purge_days(keep_days, uri)
+            epoch_end = calculate_epochms(keep_days, 'days')
+            query_results = search_timestamp(uri, 0, epoch_end)
 
-        def search_timestamp(uri, epoch_start, epoch_end)
-            Brush::HTTP.base_uri uri
+            puts "Cleaning elasticsearch, leaving #{keep_days} days of history"
+            puts "Deleting #{query_results['hits']['total']} entries"
 
-            query = {
-                        :query => {
-                            :filtered => {
-                                :query => {
-                                    :query_string => {
-                                        :query => "*"
-                                    }
-                                },
-                                :filter => {
-                                    :range => {
-                                        :@timestamp => {
-                                            :from => "#{epoch_start}",
-                                            :to => "#{epoch_end}"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-            }
-            payload = MultiJson.dump(query)
-
-            response = Brush::HTTP.get('/_search', { :body => payload })
-            hash = MultiJson.load(response.body)
-
-            return hash
+            delete_timestamp(uri, 0, epoch_end)
         end
 
-        def delete_timestamp(uri, epoch_start, epoch_end)
-            Brush::HTTP.base_uri uri
+        def purge_hours(keep_hours, uri)
+            epoch_end = calculate_epochms(keep_hours, 'hours')
+            query_results = search_timestamp(uri, 0, epoch_end)
 
-            query = {
-                        :filtered => {
-                            :query => {
-                                :query_string => {
-                                    :query => "*"
-                                }
-                            },
-                            :filter => {
-                                :range => {
-                                    :@timestamp => {
-                                        :from => "#{epoch_start}",
-                                        :to => "#{epoch_end}"
-                                    }
-                                }
-                            }
-                        }
-            }
-            payload = MultiJson.dump(query)
+            puts "Cleaning elasticsearch, leaving #{keep_hours} hours of history"
+            puts "Deleting #{query_results['hits']['total']} entries"
 
-            response = Brush::HTTP.delete('/_all/_query', { :body => payload })
-            hash = MultiJson.load(response.body)
-
-            if hash["ok"] then puts "Succes!" else puts "Fail!" end
+            delete_timestamp(uri, 0, epoch_end)
         end
     end
 end
