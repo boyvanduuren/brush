@@ -63,7 +63,7 @@ class Brush < Thor
     desc "search uri start_epoch_millisecs end_epoch_millisecs", "testing: search es"
     def search(uri, amount, unit)
         epoch_end = calculate_epochms(amount, unit)
-        search_timestamp(uri, 0, epoch_end)
+        puts "Search resulted in #{search_timestamp(uri, 0, epoch_end)['hits']['total']} hits"
     end
 
     desc "delete uri start_epoch_millisecs end_epoch_millisecs", "testing: delete index"
