@@ -1,7 +1,12 @@
 class Brush
     module Actions
         def purge_days(keep_days, uri)
-            epoch_end = calculate_epochms(keep_days, 'days')
+            if keep_days == 0 then
+                epoch_end = Time.now().to_i * 1000
+            else
+                epoch_end = calculate_epochms(keep_days, 'days')
+            end
+
             query_results = search_timestamp(uri, 0, epoch_end)
 
             puts "Cleaning elasticsearch, leaving #{keep_days} days of history"
@@ -11,7 +16,12 @@ class Brush
         end
 
         def purge_hours(keep_hours, uri)
-            epoch_end = calculate_epochms(keep_hours, 'hours')
+            if keep_hours == 0 then
+                epoch_end = Time.now().to_i * 1000
+            else
+                epoch_end = calculate_epochms(keep_hours, 'hours')
+            end
+
             query_results = search_timestamp(uri, 0, epoch_end)
 
             puts "Cleaning elasticsearch, leaving #{keep_hours} hours of history"
