@@ -70,7 +70,7 @@ class Brush
             response = self.class::HTTP.get('/_aliases')
             hash = MultiJson.load(response.body)
 
-            return hash
+            return hash.keys
         end
     end
 end
