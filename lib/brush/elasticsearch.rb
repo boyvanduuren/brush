@@ -63,5 +63,14 @@ class Brush
 
             return hash
         end
+
+        def get_indices(uri)
+            Brush::HTTP.base_uri uri
+
+            response = Brush::HTTP.get('/_aliases')
+            hash = MultiJson.load(response.body)
+
+            return hash
+        end
     end
 end
