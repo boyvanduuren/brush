@@ -19,5 +19,21 @@ class Brush
 
             return enddate.strftime("%Y.%m.%d")
         end
+
+        def purgeable_indices(days_to_keep, indices)
+            seconds_per_day = 24 * 60 * 60
+            date_format = "%Y.%m.%d"
+
+            today = Time.now()
+            enddate = today - (days_to_keep-= 1) * seconds_per_day
+            purgedate = enddate
+
+            while purgedate <= today
+                indices.delete("logstash-#{purgedate.strftime(date_format)}")
+                purgedate += seconds_per_day
+            end
+
+            return indices
+        end
     end
 end
