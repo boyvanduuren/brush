@@ -13,9 +13,9 @@ class Brush
             puts "Deleting #{query_results['hits']['total']} entries" unless options[:silent]
 
             if options[:yes]
-                delete_timestamp(uri, 0, epoch_end)
+                delete_indices(uri, purgeable_indices(keep_days.to_i, get_indices(uri).sort))
             else
-                if ask_confirmation then delete_timestamp(uri, 0, epoch_end) end
+                if ask_confirmation then delete_indices(uri, purgeable_indices(keep_days.to_i, get_indices(uri).sort)) end
             end
         end
 
