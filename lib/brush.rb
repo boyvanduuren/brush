@@ -9,6 +9,9 @@ class Brush < Thor
     include Brush::Timecalc
     include Brush::Elasticsearch
 
+    class_option :silent, :type => :boolean
+    class_option :yes, :type => :boolean
+
     desc "hours N <host>:<port>", "clean the elasticsearch backend, leaving N hours"
     def hours(keep_hours, uri)
         purge_hours(keep_hours, uri)

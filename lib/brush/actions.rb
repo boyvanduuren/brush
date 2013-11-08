@@ -9,10 +9,14 @@ class Brush
 
             query_results = search_timestamp(uri, 0, epoch_end)
 
-            puts "Cleaning elasticsearch, leaving #{keep_days} days of history"
-            puts "Deleting #{query_results['hits']['total']} entries"
+            puts "Cleaning elasticsearch, leaving #{keep_days} days of history" unless options[:silent]
+            puts "Deleting #{query_results['hits']['total']} entries" unless options[:silent]
 
-            if ask_confirmation then delete_timestamp(uri, 0, epoch_end) end
+            if options[:yes]
+                delete_timestamp(uri, 0, epoch_end)
+            else
+                if ask_confirmation then delete_timestamp(uri, 0, epoch_end) end
+            end
         end
 
         def purge_hours(keep_hours, uri)
@@ -24,10 +28,14 @@ class Brush
 
             query_results = search_timestamp(uri, 0, epoch_end)
 
-            puts "Cleaning elasticsearch, leaving #{keep_hours} hours of history"
-            puts "Deleting #{query_results['hits']['total']} entries"
+            puts "Cleaning elasticsearch, leaving #{keep_hours} hours of history" unless options[:silent]
+            puts "Deleting #{query_results['hits']['total']} entries" unless options[:silent]
 
-            if ask_confirmation then delete_timestamp(uri, 0, epoch_end) end
+            if options[:yes]
+                delete_timestamp(uri, 0, epoch_end)
+            else
+                if ask_confirmation then delete_timestamp(uri, 0, epoch_end) end
+            end
         end
 
         def ask_confirmation
