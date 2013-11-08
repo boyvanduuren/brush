@@ -72,5 +72,18 @@ class Brush
 
             return hash.keys
         end
+
+        def delete_indices(uri, indices)
+            self.class::HTTP.base_uri uri
+
+            responses = Array.new
+
+            indices.each do |index|
+                response = self.class::HTTP.delete("/#{index}")
+                responses << MultiJson.load(response.body)
+            end
+
+            return responses
+        end
     end
 end
