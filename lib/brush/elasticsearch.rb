@@ -7,7 +7,7 @@ class Brush
     end
     module Elasticsearch
         def search_timestamp(uri, epoch_start, epoch_end)
-            Brush::HTTP.base_uri uri
+            self.class::HTTP.base_uri uri
 
             query = {
                         :query => {
@@ -30,14 +30,14 @@ class Brush
             }
             payload = MultiJson.dump(query)
 
-            response = Brush::HTTP.get('/_search', { :body => payload })
+            response = self.class::HTTP.get('/_search', { :body => payload })
             hash = MultiJson.load(response.body)
 
             return hash
         end
 
         def delete_timestamp(uri, epoch_start, epoch_end)
-            Brush::HTTP.base_uri uri
+            self.class::HTTP.base_uri uri
 
             query = {
                         :filtered => {
@@ -58,16 +58,16 @@ class Brush
             }
             payload = MultiJson.dump(query)
 
-            response = Brush::HTTP.delete('/_all/_query', { :body => payload })
+            response = self.class::HTTP.delete('/_all/_query', { :body => payload })
             hash = MultiJson.load(response.body)
 
             return hash
         end
 
         def get_indices(uri)
-            Brush::HTTP.base_uri uri
+            self.class::HTTP.base_uri uri
 
-            response = Brush::HTTP.get('/_aliases')
+            response = self.class::HTTP.get('/_aliases')
             hash = MultiJson.load(response.body)
 
             return hash
