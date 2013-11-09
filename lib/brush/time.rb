@@ -1,6 +1,7 @@
 class Brush
     module Timecalc
         def calculate_epochms(amount, unit)
+            seconds_per_day = 24 * 60 * 60
             amount = amount.to_i
             now = Time.now().to_i * 1000
 
@@ -8,16 +9,18 @@ class Brush
                 when 'hours'
                     return now - (amount * (60 * 60) * 1000)
                 when 'days'
-                    return now - (amount * 24 * (60 * 60) * 1000)
+                    return now - (amount * seconds_per_day * 1000)
             end
         end
 
         def calculate_enddate(days_to_keep)
             seconds_per_day = 24 * 60 * 60
+            date_format = "%Y.%m.%d"
+
             enddate =  Time.now()
             enddate -= days_to_keep.to_i * seconds_per_day
 
-            return enddate.strftime("%Y.%m.%d")
+            return enddate.strftime(date_format)
         end
 
         def purgeable_indices(days_to_keep, indices)
