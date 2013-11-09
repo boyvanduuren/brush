@@ -39,8 +39,8 @@ class Brush
         end
 
         def ask_confirmation
-            print "Press 'Y' to confirm: "
-            if STDIN.gets.chomp == 'Y' then
+            print "Enter 'yes' to confirm: "
+            if STDIN.gets.chomp == 'yes' then
                 return true
             else
                 return false
