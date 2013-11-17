@@ -17,9 +17,10 @@ class Brush < Thor
         purge_hours(keep_hours, uri)
     end
 
-    desc "days N <host>:<port>", "clean the elasticsearch backend, leaving N days"
-    def days(keep_days, uri)
-        purge_days(keep_days, uri)
+    desc "days N <host>:<port> [index_format]",
+        "clean the elasticsearch backend, leaving N days. index_format is in strftime"
+    def days(keep_days, uri, index_format='logstash-%Y.%m.%d')
+        purge_days(keep_days, uri, index_format)
     end
 
     desc "space N <host>:<port>", "clean the elasticsearch backend, leaving N of space"

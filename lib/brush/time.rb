@@ -23,16 +23,15 @@ class Brush
             return enddate.strftime(date_format)
         end
 
-        def purgeable_indices(days_to_keep, indices, timepoint = Time.now())
+        def purgeable_indices(days_to_keep, indices, index_format, timepoint = Time.now())
             seconds_per_day = 24 * 60 * 60
-            date_format = "%Y.%m.%d"
 
             today = timepoint
             enddate = today - (days_to_keep-= 1) * seconds_per_day
             purgedate = enddate
 
             while purgedate <= today
-                indices.delete("logstash-#{purgedate.strftime(date_format)}")
+                indices.delete(purgedate.strftime(index_format))
                 purgedate += seconds_per_day
             end
 

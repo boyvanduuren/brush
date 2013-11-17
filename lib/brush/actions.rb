@@ -1,6 +1,6 @@
 class Brush
     module Actions
-        def purge_days(keep_days, uri)
+        def purge_days(keep_days, uri, index_format)
             if keep_days == 0 then
                 epoch_end = Time.now().to_i * 1000
             else
@@ -13,9 +13,10 @@ class Brush
             puts "Deleting #{query_results['hits']['total']} entries" unless options[:silent]
 
             if options[:yes]
-                delete_indices(uri, purgeable_indices(keep_days.to_i, get_indices(uri).sort))
+                delete_indices(uri, purgeable_indices(keep_days.to_i, get_indices(uri).sort, index_format))
             else
-                if ask_confirmation then delete_indices(uri, purgeable_indices(keep_days.to_i, get_indices(uri).sort)) end
+                if ask_confirmation then delete_indices(uri,
+                    purgeable_indices(keep_days.to_i, get_indices(uri).sort, index_format)) end
             end
         end
 
