@@ -30,8 +30,12 @@ class Brush
             }
             payload = MultiJson.dump(query)
 
-            response = self.class::HTTP.get('/_search', { :body => payload })
-            hash = MultiJson.load(response.body)
+            begin
+                response = self.class::HTTP.get('/_search', { :body => payload })
+                hash = MultiJson.load(response.body)
+            rescue Exception => e
+                die(e)
+            end
 
             return hash
         end
@@ -58,8 +62,12 @@ class Brush
             }
             payload = MultiJson.dump(query)
 
-            response = self.class::HTTP.delete('/_all/_query', { :body => payload })
-            hash = MultiJson.load(response.body)
+            begin
+                response = self.class::HTTP.delete('/_all/_query', { :body => payload })
+                hash = MultiJson.load(response.body)
+            rescue Exception => e
+                die(e)
+            end
 
             return hash
         end
@@ -67,8 +75,12 @@ class Brush
         def get_indices(uri)
             self.class::HTTP.base_uri uri
 
-            response = self.class::HTTP.get('/_aliases')
-            hash = MultiJson.load(response.body)
+            begin
+                response = self.class::HTTP.get('/_aliases')
+                hash = MultiJson.load(response.body)
+            rescue Exception => e
+                die(e)
+            end
 
             return hash.keys
         end
@@ -78,12 +90,21 @@ class Brush
 
             responses = Array.new
 
-            indices.each do |index|
-                response = self.class::HTTP.delete("/#{index}")
-                responses << MultiJson.load(response.body)
+            begin
+                indices.each do |index|
+                    response = self.class::HTTP.delete("/#{index}")
+                    responses << MultiJson.load(response.body)
+                end
+            rescue Exception => e
+                die(e)
             end
 
             return responses
+        end
+
+        def die(exception)
+            puts "Error: \"#{exception.message}\", aborting."
+            exit(1)
         end
     end
 end
